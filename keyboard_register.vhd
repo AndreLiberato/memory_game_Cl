@@ -5,7 +5,7 @@ ENTITY keyboard_register IS PORT(
 	input_data	:	IN 	BIT_VECTOR(3 DOWNTO 0);
 	output_data_a	:	OUT 	BIT_VECTOR(3 DOWNTO 0);
 	output_data_b	:	OUT 	BIT_VECTOR(3 DOWNTO 0);
-	read_enable	:	OUT	BIT);
+	register_full	:	OUT	BIT);
 END keyboard_register;
 
 ARCHITECTURE behavioral OF keyboard_register IS
@@ -20,7 +20,7 @@ BEGIN
 			data_a <= "0000";
 			data_b <= "0000";
 			state <= write_a;
-			read_enable <= '0';
+			register_full <= '0';
 		ELSIF (clock'EVENT AND clock = '1') THEN
 			IF (enable = '1' AND input_data /= "0000") THEN
 				CASE state IS
@@ -33,7 +33,7 @@ BEGIN
 					WHEN done =>
 						output_data_a <= data_a;
 						output_data_b <= data_b;
-						read_enable <= '1';
+						register_full <= '1';
 						state <= write_a;
 				END CASE;
 			END IF;

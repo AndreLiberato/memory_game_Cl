@@ -1,4 +1,5 @@
 ENTITY game_memory IS PORT(
+	initialize	:	IN	BIT;
 	address		:	IN 	BIT_VECTOR(3 DOWNTO 0);
 	read_enable	:	IN 	BIT;
 	write_enable	:	IN 	BIT;
@@ -11,8 +12,18 @@ ARCHITECTURE behavioral OF game_memory IS
 	SIGNAL	memory	:	memory_array	:= (OTHERS => (OTHERS => '0'));
 BEGIN
 	PROCESS(address, read_enable, write_enable, input_data)
-	BEGIN
-		IF (read_enable'EVENT AND read_enable = '1') THEN
+	BEGIN	
+		IF (initialize = '1') THEN
+			memory(0) <= "0001";
+			memory(1) <= "0001";
+			memory(2) <= "0010";
+			memory(3) <= "0010";
+			memory(4) <= "0011";
+			memory(5) <= "0011";
+			memory(6) <= "0100";
+			memory(7) <= "0100";
+			memory(8) <= "0101";
+		ELSIF (read_enable'EVENT AND read_enable = '1') THEN
 			CASE address IS
            			WHEN "0000" => output_data <= memory(0);
             			WHEN "0001" => output_data <= memory(1);

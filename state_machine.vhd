@@ -2,9 +2,10 @@ ENTITY state_machine IS PORT (
 	clock			:	IN	BIT;
 	reset			:	IN	BIT;
 	keyboard_register_full	:	IN	BIT;
-	equals			:	IN	BIT;
+	comparator_result	:	IN	BIT;
 	keyboard_register_enable:	OUT	BIT;
-	comparator_enable	:	OUT	BIT);
+	comparator_enable	:	OUT	BIT;
+	initialize_memory	:	OUT	BIT);
 END state_machine;
 
 ARCHITECTURE behavioral OF state_machine IS
@@ -17,9 +18,11 @@ BEGIN
 			state <= expect;
 			keyboard_register_enable <= '1';
 			comparator_enable <= '0';
+			initialize_memory <= '1';
 		ELSIF (clock'EVENT AND clock = '1') THEN
 			CASE state IS
 				WHEN expect =>
+					initialize_memory <= '0';
 					IF (keyboard_register_full = '0') THEN
 						keyboard_register_enable <= '1';
 						comparator_enable <= '0';
@@ -31,7 +34,7 @@ BEGIN
 					comparator_enable <= '1';
 					state <= verify;
 				WHEN verify =>
-					IF (equals = '1') THEN
+					IF (comparator_result = '1') THEN
 						state <= success;
 					END IF;
 				WHEN success =>
